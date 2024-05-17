@@ -1,4 +1,4 @@
-thjb_unsubscribe_job_alerts# Talent Hero Job Board Plugin
+# Talent Hero Job Board Plugin
 
 ## Actions
 
