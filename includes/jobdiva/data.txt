@@ -1,6 +1,3 @@
-17300499096998 First Name: ApplicationTh - Last Name: Test+Application - Email: testapplication@talentheromedia.com Job ID: 22163112
-17300499096998 First Name: ApplicationTh - Last Name: Test+Application - Email: testapplication@talentheromedia.com Job ID: 22161315
-17300530934463 First Name: ApplicationTh - Last Name: Test+Application - Email: testapplication1234@talentheromedia.com Job ID: 22161995
-17300530934463 First Name: ApplicationTh - Last Name: Test+Application - Email: testapplication1234@talentheromedia.com Job ID: 22161092
-17300553030511 First Name: Test+Application - Last Name: TH+Media+Applicant - Email: thmediaapplicant1@talentheromedia.com Job ID: 22161092
-17300553030511 First Name: Test+Application - Last Name: TH+Media+Applicant - Email: thmediaapplicant1@talentheromedia.com Job ID: 22161995
+ ----------- User ID: 0 First Name: Applicant - Last Name: Talent+Hero - Email: testapplicantnohistory@talentheromedia.com Job ID: 21145914
+17458569668646 ----------- User ID: 17458569668646 First Name: Applicant - Last Name: Talent+Hero - Email: testapplicantnohistory@talentheromedia.com Job ID: 21481588
+17458569668646 ----------- User ID: 17458569668646 First Name: Applicant - Last Name: talent+hero - Email: testapplicantnohistory@talentheromedia.com Job ID: 21559739

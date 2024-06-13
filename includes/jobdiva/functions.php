@@ -225,16 +225,8 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
 
     // create candidate row
     // $add_candidate_url = $api_base . 'api/jobdiva/createCandidate';
-    $add_resume_url = $api_base . 'api/jobdiva/uploadResume';
-    $update_candidate_url = $api_base . 'api/jobdiva/updateCandidateProfile';
-    $application_url = $api_base . 'api/jobdiva/createJobApplication';
-	
-	// $curl = curl_init();
 
-	$data['first_name'] = urlencode($data['first_name']);
-	$data['last_name'] = urlencode($data['last_name']);
-
-	// curl_setopt_array($curl, array(
+    	// curl_setopt_array($curl, array(
 	// 	CURLOPT_URL => $add_candidate_url . '?firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
 	// 	// CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'],
 	// 	CURLOPT_RETURNTRANSFER => true,
@@ -251,12 +243,51 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
 
 	// $r = curl_exec($curl);
 
+    $checkAvailableCandidate = $api_base . 'apiv2/jobdiva/searchCandidateProfile';
+    $add_resume_url = $api_base . 'api/jobdiva/uploadResume';
+    $update_candidate_url = $api_base . 'api/jobdiva/updateCandidateProfile';
+    $application_url = $api_base . 'api/jobdiva/createJobApplication';
+	
+	// $curl = curl_init();
+
+	$data['first_name'] = urlencode($data['first_name']);
+	$data['last_name'] = urlencode($data['last_name']);
+
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $checkAvailableCandidate,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS =>'{
+            "email": "' . $data['email'] . '"
+        }',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Authorization: ' . $auth_token
+        ),
+    ));
+
+    $response = curl_exec($curl);
+    $candidateData = json_decode($response);
+
+    curl_close($curl);
+
+    $JD_candidateID = 0;
+    if($candidateData[0]->id){
+        $JD_candidateID = $candidateData[0]->id;
+    }
+    
     $user_id = $data['userID'];
     $key = 'JD_candidateID';
     $single = true;
     $user_last = get_user_meta( $user_id, $key, $single );
 
-    $JD_candidateID = 0;
     if ($user_last){
         $JD_candidateID = $user_last;
     }
@@ -297,7 +328,7 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     // Set the file path
     $file = $directory . '/data.txt';
 
-    $dataToBeAdded .= "User ID: " . $JD_candidateID ." First Name: " . $data['first_name'] . " - Last Name: " . $data['last_name'] . " - Email: " . $data['email'] . " Job ID: " . $job_external_id . "\n";
+    $dataToBeAdded .= $candidateData[0]->id . " ----------- User ID: " . $JD_candidateID ." First Name: " . $data['first_name'] . " - Last Name: " . $data['last_name'] . " - Email: " . $data['email'] . " Job ID: " . $job_external_id . "\n";
 
     // Write content to the file
     file_put_contents($file, $dataToBeAdded, FILE_APPEND);
