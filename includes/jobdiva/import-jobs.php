@@ -8,10 +8,6 @@ function thjb_import_jobs_jobdiva_api()
 
         $jobs = thjb_jobdiva_get_posted_jobs();
 
-        echo "<pre>";
-        print_r($jobs);
-        echo "</pre>";
-
         if ( ! empty($jobs) ) {
 
             $import_date = date('YmdHi');
