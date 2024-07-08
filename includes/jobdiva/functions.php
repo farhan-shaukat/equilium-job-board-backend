@@ -94,7 +94,7 @@ function thjb_jobdiva_get_new_updated_jobs()
         $resp = thjb_get_remote_data($jobs_link, [
             'fromDate'        => urlencode( date('m/d/Y H:i:s', strtotime('-1 day')) ),
             'toDate'          => urlencode( date('m/d/Y H:i:s' ) ),
-            'userFieldsName'  => 'Industry',
+            'userFieldsName'  => 'Job%20Classification',
             'alternateFormat' => true
         ], ['Authorization: ' . $auth_token] );
 
@@ -119,7 +119,7 @@ function thjb_jobdiva_get_job_data($job_id)
         $resp = thjb_get_remote_data($jobs_link, [
             'jobId'           => $job_id,
             'alternateFormat' => true,
-            'userFieldsName'  => 'Industry'
+            'userFieldsName'  => 'Job%20Classification'
         ], ['Authorization: ' . $auth_token] );
 
         $result = (array)$resp;
@@ -154,7 +154,7 @@ function thjb_jobdiva_get_jobs_data($jobs = [])
 
         $jobs_link = add_query_arg([
             'alternateFormat' => true,
-            'userFieldsName'  => 'Industry'
+            'userFieldsName'  => 'Job%20Classification'
         ], $jobs_link);
 
         foreach ($jobs as $job_id) {
@@ -224,7 +224,7 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     $api_base = apply_filters('thjb_jobdiva_api_base_url', '');
 
     // create candidate row
-    // $add_candidate_url = $api_base . 'api/jobdiva/createCandidate';
+       // $add_candidate_url = $api_base . 'api/jobdiva/createCandidate';
 
     	// curl_setopt_array($curl, array(
 	// 	CURLOPT_URL => $add_candidate_url . '?firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
@@ -247,8 +247,8 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     $add_resume_url = $api_base . 'api/jobdiva/uploadResume';
     $update_candidate_url = $api_base . 'api/jobdiva/updateCandidateProfile';
     $application_url = $api_base . 'api/jobdiva/createJobApplication';
-	
-	// $curl = curl_init();
+
+    	// $curl = curl_init();
 
 	$data['first_name'] = urlencode($data['first_name']);
 	$data['last_name'] = urlencode($data['last_name']);
@@ -295,7 +295,7 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     // add CV and candidate
     $contents = file_get_contents($cv_file['path']);
     $file_content = base64_encode($contents);
-    
+   
     $resume_data = [
         'candidateid'   => $JD_candidateID,
         'filename'      => $cv_file['name'],
@@ -315,10 +315,67 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     if ($data['userID']){
         update_user_meta($data['userID'], 'JD_candidateID', $candidate_id);
     }
-    
-//     error_log(' ** Candidate ID - ' . $candidate_id);
 
-//     error_log(' ** Candidate Name - ' . $data['first_name'] . " " . $data['last_name']);
+    error_log(' ** Candidate ID - ' . $candidate_id);
+
+    error_log(' ** Candidate Name - ' . $data['first_name'] . " " . $data['last_name']);
+
+    // $r = thjb_post_remote_data($update_candidate_url, [
+    //     'candidateid'   => (int) $candidate_id,
+    //     'firstName'     => $data['first_name'],
+    //     'lastName'      => $data['last_name'],
+    //     'email'         => $data['email']
+    // ], ['Authorization: ' . $auth_token] );
+
+	$curl = curl_init();
+
+	// curl_setopt_array($curl, array(
+	// 	CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
+	// 	CURLOPT_RETURNTRANSFER => true,
+	// 	CURLOPT_ENCODING => '',
+	// 	CURLOPT_MAXREDIRS => 10,
+	// 	CURLOPT_TIMEOUT => 0,
+	// 	CURLOPT_FOLLOWLOCATION => true,
+	// 	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 	CURLOPT_CUSTOMREQUEST => 'POST',
+	// 	CURLOPT_HTTPHEADER => array(
+	// 		'Authorization:' . $auth_token
+	// 	),
+	// ));
+
+    $data['first_name'] = urlencode($data['first_name']);
+    $data['last_name'] = urlencode($data['last_name']);
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
+        // CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'],
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_ENCODING => '',
+		CURLOPT_MAXREDIRS => 10,
+		CURLOPT_TIMEOUT => 0,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		CURLOPT_CUSTOMREQUEST => 'POST',
+		CURLOPT_HTTPHEADER => array(
+			'Authorization: ' . $auth_token
+		),
+	));
+
+    // curl_setopt_array($curl, array(
+    //     CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
+    //     CURLOPT_RETURNTRANSFER => true,
+    //     CURLOPT_ENCODING => '',
+    //     CURLOPT_MAXREDIRS => 10,
+    //     CURLOPT_TIMEOUT => 0,
+    //     CURLOPT_FOLLOWLOCATION => true,
+    //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //     CURLOPT_CUSTOMREQUEST => 'POST',
+    //     CURLOPT_HTTPHEADER => array(
+    //       'Authorization:' . $auth_token
+    //     ),
+    // ));
+      
+	$r = curl_exec($curl);
 
     $dataToBeAdded = "";
 
@@ -328,32 +385,32 @@ function thjb_jobdiva_send_candidate($data, $cv_file)
     // Set the file path
     $file = $directory . '/data.txt';
 
-    $dataToBeAdded .= $candidateData[0]->id . " ----------- User ID: " . $JD_candidateID ." First Name: " . $data['first_name'] . " - Last Name: " . $data['last_name'] . " - Email: " . $data['email'] . " Job ID: " . $job_external_id . "\n";
+    $dataToBeAdded .= "First Name: " . $data['first_name'] . " - Last Name: " . $data['last_name'] . " - Email: " . $data['email'] . " Candidate Id: " . $candidate_id . " Job ID: " . $job_external_id . "\n";
 
     // Write content to the file
     file_put_contents($file, $dataToBeAdded, FILE_APPEND);
 
-	// curl_close($curl);
+	curl_close($curl);
 
-    $curl = curl_init();
+//     $curl = curl_init();
 
-    curl_setopt_array($curl, array(
-    CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: ' . $auth_token
-    ),
-    ));
+//     curl_setopt_array($curl, array(
+//     CURLOPT_URL => $update_candidate_url . '?candidateid=' . $candidate_id . '&firstName=' . $data['first_name'] . '&lastName=' . $data['last_name'] . '&email=' . $data['email'],
+//     CURLOPT_RETURNTRANSFER => true,
+//     CURLOPT_ENCODING => '',
+//     CURLOPT_MAXREDIRS => 10,
+//     CURLOPT_TIMEOUT => 0,
+//     CURLOPT_FOLLOWLOCATION => true,
+//     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//     CURLOPT_CUSTOMREQUEST => 'POST',
+//     CURLOPT_HTTPHEADER => array(
+//         'Authorization: ' . $auth_token
+//     ),
+//     ));
 
-    $r = curl_exec($curl);
+//     $r = curl_exec($curl);
 
-    curl_close($curl);
+//     curl_close($curl);
 
     $curl = curl_init();
 
@@ -482,10 +539,12 @@ function thjb_prepare_jobdiva_data_for_import($job_details)
         'min_rate'       => thjb_format_salary_string($job_details['PAYRATEMIN']),
         'max_rate'       => thjb_format_salary_string($job_details['PAYRATEMAX']),
         'rate_per'       => strtolower($job_details['PAYRATEPER']),
-        'industry'       => $job_details['Industry'],
+        'industry'       => $job_details['Job Classification'],
         'job_type'       => $job_details["POSITIONTYPE"],
         'state'          => $job_details["STATE"],
         'city'           => $job_details["CITY"],
+        'zipcode'        => $job_details["ZIPCODE"],
+        'country'        => $job_details["COUNTRY"],
         'updated_at'     => $job_details['DATEUPDATED'],
         'fields_updated_at'     => $job_details['DATEUSERFIELDUPDATED'],
     ];

@@ -8,6 +8,10 @@ function thjb_import_jobs_jobdiva_api()
 
         $jobs = thjb_jobdiva_get_posted_jobs();
 
+        echo "<pre>";
+        print_r($jobs);
+        echo "</pre>";
+
         if ( ! empty($jobs) ) {
 
             $import_date = date('YmdHi');
@@ -186,6 +190,19 @@ function thjb_process_jobdiva_job_import($data, $chunk_data, $updated_date)
         update_post_meta($post_id, 'job_fields_updated_date', $data['fields_updated_at']);
 
         update_post_meta($post_id, 'reference_number', $data['ref_num']);
+        
+        $jobLocation = $data['city'];
+        if ($data['state']) {
+            $jobLocation .= ', ' . $data['state'];
+        }
+        if ($data['zipcode']) {
+            $jobLocation .= ', ' . $data['zipcode'];
+        }
+        if ($data['country']) {
+            $jobLocation .= ', ' . $data['country'];
+        }
+
+        update_post_meta($post_id, 'job_location', $jobLocation);
 
         $salary_string = thjb_generate_job_salary_string($data);
         update_post_meta($post_id, 'job_salary', $salary_string);

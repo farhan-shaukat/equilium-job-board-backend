@@ -219,6 +219,8 @@ class Jobs extends RestApiBase
                 }
             }
         }
+        
+        $job_location= get_post_meta($job->ID, 'job_location', 1);
 
         $posted_time = get_post_time('U', false, $job);
         $posted_string = thjb_get_timeago_string($posted_time);
@@ -234,6 +236,7 @@ class Jobs extends RestApiBase
             'city'            => $city,
             'state'           => $state,
             'salary'          => $job_salary,
+            'location'        => $job_location,
             'is_saved'        => thjb_is_job_saved($job->ID, $this->user_saved),
             'is_applied'      => thjb_is_job_applied($job->ID, $this->user_applied),
         ];

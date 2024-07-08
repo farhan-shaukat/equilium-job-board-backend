@@ -36,6 +36,8 @@ class RestApiJobs extends RestApiBase
             }
         }
 
+        $job_location= get_post_meta($job->ID, 'job_location', 1);
+
         $posted_time = get_post_time('U', false, $job);
         $posted_string = thjb_get_timeago_string($posted_time);
 
@@ -49,6 +51,7 @@ class RestApiJobs extends RestApiBase
             'date_str'        => $posted_string,
             'city'            => $city,
             'state'           => $state,
+            'location'        => $job_location,
             'salary'          => $job_salary
         ];
 
