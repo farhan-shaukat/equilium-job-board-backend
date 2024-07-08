@@ -1,4 +1,8 @@
-thjb_unsubscribe_job_alerts# Talent Hero Job Board Plugin
+# Talent Hero Job Board Plugin
+
+## Jobs List API URL:
+
+**https://equiliem.com/wp-json/thjb/v1/jobs**
 
 ## Actions
 
@@ -10,7 +14,7 @@ add_action('thjb_general_section_register_fields', 'thjb_general_section_jobdiva
 
 **thjb_import_jobs_data** - import jobs data cron event
 
-**thjb_delete_job_from_saved_lists** - Fired to run deleting the Job from saved jobs lists 
+**thjb_delete_job_from_saved_lists** - Fired to run deleting the Job from saved jobs lists
 
 do_action('thjb_delete_job_from_saved_lists', $post_id);
 
@@ -41,4 +45,3 @@ $filter_type - value from array ['industries', 'job-type', 'states']
 ## Shortcodes
 
 **thjb_unsubscribe_page** - Shortcode for unsubscribe page. Contains thjb_unsubscribe_job_alerts action.
-
